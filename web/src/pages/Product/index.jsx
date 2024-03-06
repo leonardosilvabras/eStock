@@ -1,14 +1,17 @@
 import { useNavigate } from "react-router-dom";
 
 import { Container, Header, Item } from "./styles";
-import { Button } from '../../components/Button';
+import { Button } from "../../components/Button";
+import { useAuth } from "../../hooks/auth";
+import { USER_ROLE } from "../../utils/rules";
 
 export function Product() {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const products = Array(20)
-    .fill({ name: 'Produto' })
-    .map((item, index) => (`${item.name} ${index + 1}`));
+    .fill({ name: "Produto" })
+    .map((item, index) => `${item.name} ${index + 1}`);
 
   return (
     <Container>
@@ -16,19 +19,18 @@ export function Product() {
         <h1>Produtos</h1>
 
         <nav>
-          <Button title="Cadastrar" />
-          <Button title="Voltar" onClick={() => navigate('/')} />
+          {[USER_ROLE.ADMIN].includes(user.role) && (
+            <Button title="Cadastrar" />
+          )}
+          <Button title="Voltar" onClick={() => navigate("/")} />
         </nav>
       </Header>
 
-      {
-        products.map((product) => (
-          <Item key={product}>
-            <span>{product}</span>
-          </Item>
-        ))
-      }
+      {products.map((product) => (
+        <Item key={product}>
+          <span>{product}</span>
+        </Item>
+      ))}
     </Container>
-
-  )
+  );
 }
